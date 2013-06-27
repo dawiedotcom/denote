@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="javascript/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="javascript/denote.js"></script>
+    <script type="text/javascript">
+        goog.require('denote.client.markup');
+    </script>
+</head>    
+<body>
+    <script>
+        //alert(denote.client.markup.greet("ClojureScript"));
+        //denote.client.markup.postmd("#hi\nthere");
+    </script>
+    <div id="content">
+
+    </div>
+    <div>
+        <p>Markdown:</p>
+        <textarea id="mdarea"></textarea>
+        <button onclick="denote.client.markup.renderClicked()">Render</button>
+    </div>
+</body>
+</html>
