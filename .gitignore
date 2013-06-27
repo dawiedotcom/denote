@@ -10,3 +10,8 @@ pom.xml.asc
 .lein-failures
 .lein-plugins
 .lein-repl-history
+
+# ignored compiled clojurescript
+resources/public/javascript/denote/
+resources/public/javascript/cljs/
+resources/public/javascript/denote.js
