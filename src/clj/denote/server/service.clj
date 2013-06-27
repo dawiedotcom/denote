@@ -4,8 +4,7 @@
         [denote.server.pandoc :only [pandoc]]
         [ring.middleware.edn :only [wrap-edn-params]])
   (:require [compojure.route :as route]
-            [compojure.handler :as handler]))
-
+            [ring.util.response :as resp]))
 
 (defn pandoc-response [format content]
   (let [html (pandoc format content)]
@@ -17,13 +16,11 @@
        :body (:err html)})))
 
 (defroutes app-routes
-  (GET "/" [] "<h1> hello </h1>")
+  (GET "/" [] (resp/redirect "/index.html"))
   (POST "/" [format content] (pandoc-response format content))
+  (route/resources "/")
   (route/not-found "404"))
 
 (def app
   (-> app-routes
       wrap-edn-params))
-  
-
-
