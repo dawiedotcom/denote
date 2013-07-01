@@ -8,12 +8,15 @@
   (:require [compojure.route :as route]
             [ring.util.response :as resp]))
 
-(defn pandoc-response [format content]
+(defn pandoc-response [format content content-id]
   (let [html (pandoc format content)]
     (println format content)
     (println html)
     (if (zero? (:exit html))
-      {:body (:out html)}
+      {:content-type "Application/edn"
+       :body (str {:html (:out html)
+                   :content-id content-id
+                   :markup content})}
       {:status 400
        :body (:err html)})))
 
@@ -24,7 +27,7 @@
 
 (defroutes app-routes
   (GET "/" [] (resp/redirect "/index.html"))
-  (POST "/" [format content] (pandoc-response format content))
+  (POST "/" [format content content-id] (pandoc-response format content content-id))
   (route/resources "/")
   (GET "*" {params :params} (markup-response (:* params)))
   (route/not-found "404"))
