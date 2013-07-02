@@ -6,10 +6,14 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [compojure "1.1.5"]
                  [ring "1.0.2"]
-                 [fogus/ring-edn "0.1.0"]
-                 [org.clojure/clojurescript "0.0-1806"]
+                 [fogus/ring-edn "0.2.0-SNAPSHOT"]
+                 [domina "1.0.0"]
                  [com.google.javascript/closure-compiler "r1592"]
-                 [org.clojure/google-closure-library "0.0-790"]]
+                 [org.clojure/google-closure-library "0.0-790"]
+                 [org.clojure/google-closure-library-third-party "0.0-2029"]]
+  :extra-classpath-dirs ["checkouts/clojurescript/src/clj"
+                         "checkouts/clojurescript/src/cljs"]
+  :dev-dependencies [[lein-cljsbuild "0.3.2"]]
   :plugins [[lein-ring "0.8.5"]
             [lein-cljsbuild "0.3.2"]]
   :ring {:handler denote.server.service/app}

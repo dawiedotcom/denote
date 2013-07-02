@@ -25,14 +25,21 @@
     (if content
       {:body content})))
 
+(def default-html (slurp "resources/public/index.html"))
+
+(defn edn-request? [content-type]
+  (and content-type
+       (not (empty? (re-find #"application/(vnd.+)?edn" content-type)))))
+
 (defroutes app-routes
-  (GET "/" [] (resp/redirect "/index.html"))
-  (POST "/" [format content content-id] (pandoc-response format content content-id))
   (route/resources "/")
-  (GET "*" {params :params} (markup-response (:* params)))
+  (GET "*" {content-type :content-type uri :uri} 
+       (if (edn-request? content-type)
+         (markup-response uri)
+         default-html))
+  (POST "/" [format content content-id] (pandoc-response format content content-id))
   (route/not-found "404"))
 
 (def app
   (-> app-routes
-      wrap-params
       wrap-edn-params))
