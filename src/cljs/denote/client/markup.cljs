@@ -38,15 +38,31 @@
     (dom/destroy-children! div)
     (dom/set-inner-html! div (str content (edit-button id)))))
 
+(defn ajax [params]
+  (.ajax js/jQuery (map->js (merge {:type "GET"
+                                    :contentType "application/edn"}
+                                   params))))
+
 (defn postmd [md content-id]
   (let [data {:format :markdown 
               :content  (str md)
               :content-id content-id}]
-    (.ajax js/jQuery (map->js {:url "/"
-                               :type "POST"
-                               :contentType "application/edn"
-                               :data (str data)
-                               :success callback}))))
+    (ajax {:url "/"
+           :type "POST"
+           :data (str data)
+           :success callback})))
+
+(defn get-callback [markup]
+  (let [pars (remove empty? (clojure.string/split markup #"\n[\ \n]*\n"))
+        ids (map (comp symbol str) (repeat 'c) (range))
+        root (dom/by-id "content")]
+    (doseq [[id par] (map vector ids pars)]
+      (dom/append! root (html/tag "div" {:id id}))
+      (postmd par id))))
+
+(defn getmd [path]
+  (ajax {:url path
+         :success get-callback}))
 
 ;; Public
 
@@ -59,3 +75,7 @@
 (defn ^:export renderClicked [content-id]
   (let [mdarea (.getElementById js/document "mdarea")]
     (postmd (.-value mdarea) content-id)))
+
+(defn ^:export start []
+  (console.log "starting" (.-pathname js/window.location))
+  (getmd (.-pathname js/window.location)))
