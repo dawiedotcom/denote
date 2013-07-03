@@ -4,7 +4,7 @@
         [denote.server.pandoc :only [pandoc]]
         [denote.server.io :only [choose-file]]
         [ring.middleware.edn :only [wrap-edn-params]]
-        [ring.middleware.params :only [wrap-params]])
+        [ring.middleware.content-type :only [wrap-content-type]])
   (:require [compojure.route :as route]
             [ring.util.response :as resp]))
 
@@ -13,7 +13,7 @@
     (println format content)
     (println html)
     (if (zero? (:exit html))
-      {:content-type "Application/edn"
+      {:headers {"Content-Type" "Application/edn"}
        :body (str {:html (:out html)
                    :content-id content-id
                    :markup content})}
@@ -23,7 +23,8 @@
 (defn markup-response [uri]
   (let [content (choose-file uri)]
     (if content
-      {:body content})))
+      {:body content
+       :headers {"Content-Type" "text/plain"}})))
 
 (def default-html (slurp "resources/public/index.html"))
 
@@ -42,4 +43,5 @@
 
 (def app
   (-> app-routes
-      wrap-edn-params))
+      wrap-edn-params
+      wrap-content-type))
