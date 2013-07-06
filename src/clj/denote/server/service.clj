@@ -6,7 +6,8 @@
         [ring.middleware.edn :only [wrap-edn-params]]
         [ring.middleware.content-type :only [wrap-content-type]])
   (:require [compojure.route :as route]
-            [ring.util.response :as resp]))
+            [ring.util.response :as resp]
+            [clojure.string :as string]))
 
 (defn pandoc-response [format content content-id]
   (let [html (pandoc format content)]
@@ -20,11 +21,21 @@
       {:status 400
        :body (:err html)})))
 
+(defn content->response [content]
+  (let [pars (string/split content #"\n[\ \n]*\n")
+        pandoc-result (map #(pandoc :markdown %) pars)
+        html-pars (map :out pandoc-result)]
+    (into []
+          (map (fn [& args] (zipmap '(:par :markup :html) args))
+               (range)
+               pars
+               html-pars))))
+
 (defn markup-response [uri]
   (let [content (choose-file uri)]
     (if content
-      {:body content
-       :headers {"Content-Type" "text/plain"}})))
+      {:body (str (content->response content))
+       :headers {"Content-Type" "application/edn"}})))
 
 (def default-html (slurp "resources/public/index.html"))
 

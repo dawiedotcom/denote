@@ -9,19 +9,15 @@
     </script>
 </head>    
 <body>
-    <script>
-        //alert(denote.client.markup.greet("ClojureScript"));
-        //denote.client.markup.postmd("#hi\nthere");
-    </script>
     <div id="content">
-        <div id="c1">
-            <button onclick="denote.client.markup.edit('c1')">Edit</button>
-        </div>
     </div>
     <!--<div>
         <p>Markdown:</p>
         <textarea id="mdarea"></textarea>
         <button onclick="denote.client.markup.renderClicked()">Render</button>
     </div>-->
+    <script>
+        denote.client.markup.start();
+    </script>
 </body>
 </html>

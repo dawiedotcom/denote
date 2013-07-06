@@ -52,13 +52,14 @@
            :data (str data)
            :success callback})))
 
-(defn get-callback [markup]
-  (let [pars (remove empty? (clojure.string/split markup #"\n[\ \n]*\n"))
-        ids (map (comp symbol str) (repeat 'c) (range))
+(defn get-callback [response*]
+  (let [response (reader/read-string response*)
         root (dom/by-id "content")]
-    (doseq [[id par] (map vector ids pars)]
-      (dom/append! root (html/tag "div" {:id id}))
-      (postmd par id))))
+    (doseq [m response]
+      (let [id (str "c" (:par m))
+            div (html/tag "div" {:id id} (:html m) (edit-button id))]
+        (reset! *markup* (assoc @*markup* id (:markup m)))
+        (dom/append! root div)))))
 
 (defn getmd [path]
   (ajax {:url path
