@@ -54,8 +54,10 @@
 
 (defn get-callback [response*]
   (let [response (reader/read-string response*)
+        ext (dom/by-id "extention")
         root (dom/by-id "content")]
-    (doseq [m response]
+    (dom/set-attr! ext :value (:ext response))
+    (doseq [m (:content response)]
       (let [id (str "c" (:par m))
             div (html/tag "div" {:id id} (:html m) (edit-button id))]
         (reset! *markup* (assoc @*markup* id (:markup m)))

@@ -5,7 +5,8 @@
     [clojure.string :only [split join]]))
 
 (declare ls-markup
-         dir|file) 
+         dir|file
+         extention) 
 
 (def markup-extentions #{"md" "markdown" "org"})
 
@@ -15,11 +16,10 @@
       (slurp filename))))
 
 (defn choose-file [uri]
-  (println uri)
   (let [[directory filename-stem] (dir|file uri)
-        files (ls-markup directory filename-stem)]
-    (println directory filename-stem files)
-    (slurp (first files))))
+        filename (first (ls-markup directory filename-stem))]
+    {:content (slurp filename)
+     :ext (extention filename)}))
 
 ;;; Helpers
 

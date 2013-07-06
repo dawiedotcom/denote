@@ -11,8 +11,6 @@
 
 (defn pandoc-response [format content content-id]
   (let [html (pandoc format content)]
-    (println format content)
-    (println html)
     (if (zero? (:exit html))
       {:headers {"Content-Type" "Application/edn"}
        :body (str {:html (:out html)
@@ -22,19 +20,21 @@
        :body (:err html)})))
 
 (defn content->response [content]
-  (let [pars (string/split content #"\n[\ \n]*\n")
-        pandoc-result (map #(pandoc :markdown %) pars)
-        html-pars (map :out pandoc-result)]
-    (into []
-          (map (fn [& args] (zipmap '(:par :markup :html) args))
-               (range)
-               pars
-               html-pars))))
+  (let [snippets (string/split content #"\n[\ \n]*\n")
+        pandoc-result (map #(pandoc :markdown %) snippets)
+        html-snippets (map :out pandoc-result)]
+    (map (fn [& args] (zipmap '(:par :markup :html) args))
+         (range)
+         snippets
+         html-snippets)))
 
 (defn markup-response [uri]
-  (let [content (choose-file uri)]
+  (let [{content :content :as body} (choose-file uri)]
     (if content
-      {:body (str (content->response content))
+      {:body (->> content
+                  content->response 
+                  (assoc body :content ,,,)
+                  str)
        :headers {"Content-Type" "application/edn"}})))
 
 (def default-html (slurp "resources/public/index.html"))
