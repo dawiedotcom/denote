@@ -10,6 +10,9 @@
       (aset out (name k) v))
     out))
 
+(defn clj-str [a]
+  (clojure.string/replace (str a) #"\\x" "\\u00"))
+
 (def *markup* (atom {}))
 
 ;; Templating
@@ -29,7 +32,7 @@
 
 ;; Client/Server coms
 
-(defn callback [body]
+(defn pandoc-callback [body]
   (let [response (reader/read-string body)
         id (:content-id response)
         content (:html response)
@@ -40,7 +43,7 @@
 
 (defn ajax [params]
   (.ajax js/jQuery (map->js (merge {:type "GET"
-                                    :contentType "application/edn"}
+                                    :contentType "application/edn; charset=utf-8"}
                                    params))))
 
 (defn postmd [md content-id]
@@ -49,8 +52,8 @@
               :content-id content-id}]
     (ajax {:url "/"
            :type "POST"
-           :data (str data)
-           :success callback})))
+           :data (clj-str data)
+           :success pandoc-callback})))
 
 (defn get-callback [response*]
   (let [response (reader/read-string response*)
@@ -63,7 +66,7 @@
         (reset! *markup* (assoc @*markup* id (:markup m)))
         (dom/append! root div)))))
 
-(defn getmd [path]
+(defn getmd-from-disk [path]
   (ajax {:url path
          :success get-callback}))
 
@@ -81,4 +84,15 @@
 
 (defn ^:export start []
   (console.log "starting" (.-pathname js/window.location))
-  (getmd (.-pathname js/window.location)))
+  (getmd-from-disk (.-pathname js/window.location)))
+
+(defn ^:export save []
+  (let [ext (dom/value (dom/by-id "extention"))
+        uri (.-pathname js/window.location)
+        data (clj-str {:markup @*markup*
+                       :ext ext
+                       :uri uri})]
+    (console.log data)
+    (ajax {:url "/save"
+           :type "POST"
+           :data data})))

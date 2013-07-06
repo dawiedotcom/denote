@@ -43,6 +43,10 @@
   (and content-type
        (not (empty? (re-find #"application/(vnd.+)?edn" content-type)))))
 
+(defn markup-str [markup-map]
+  (let [pars (map second (sort-by first markup-map))]
+    (apply str (interleave pars (repeat "\n\n")))))
+
 (defroutes app-routes
   (route/resources "/")
   (GET "*" {content-type :content-type uri :uri} 
@@ -50,6 +54,7 @@
          (markup-response uri)
          default-html))
   (POST "/" [format content content-id] (pandoc-response format content content-id))
+  (POST "/save" [uri ext markup] (spit (str "." uri "." ext) (markup-str markup)))
   (route/not-found "404"))
 
 (def app
