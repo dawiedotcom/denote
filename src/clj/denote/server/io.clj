@@ -1,5 +1,4 @@
 (ns denote.server.io
-  (:gen-class)
   (:use
     [clojure.java.io :only [file as-file]]
     [clojure.string :only [split join]]))

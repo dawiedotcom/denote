@@ -1,11 +1,11 @@
 (ns denote.server.service
-  (:gen-class)
   (:use compojure.core
         [denote.server.pandoc :only [pandoc]]
         [denote.server.io :only [choose-file]]
         [ring.middleware.edn :only [wrap-edn-params]]
         [ring.middleware.content-type :only [wrap-content-type]])
   (:require [compojure.route :as route]
+            [clojure.java.io]]
             [ring.util.response :as resp]
             [clojure.string :as string]))
 
@@ -37,7 +37,7 @@
                   str)
        :headers {"Content-Type" "application/edn"}})))
 
-(def default-html (slurp "resources/public/index.html"))
+(def default-html (slurp (clojure.java.io/resource "public/index.html")))
 
 (defn edn-request? [content-type]
   (and content-type

@@ -1,5 +1,5 @@
 (ns denote.server.core
-  ;(:gen-class)
+  (:gen-class :main true)
   (:use ring.adapter.jetty)
   (:require [denote.server.service :as service]))
 

@@ -1,5 +1,4 @@
 (ns denote.server.pandoc
-  (:gen-class)
   (use
    [clojure.java.shell :only [sh]]))
 
