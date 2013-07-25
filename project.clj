@@ -14,7 +14,7 @@
   :hooks [leiningen.cljsbuild]
   :extra-classpath-dirs ["checkouts/clojurescript/src/clj"
                          "checkouts/clojurescript/src/cljs"]
-  :dev-dependencies [[lein-cljsbuild "0.3.2"]
+  :dev-dependencies [[lein-cljsbuild "0.3.2"]]
   :plugins [[lein-ring "0.8.5"]
             [lein-cljsbuild "0.3.2"]]
   :ring {:handler denote.server.service/app}

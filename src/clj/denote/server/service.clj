@@ -5,7 +5,7 @@
         [ring.middleware.edn :only [wrap-edn-params]]
         [ring.middleware.content-type :only [wrap-content-type]])
   (:require [compojure.route :as route]
-            [clojure.java.io]]
+            [clojure.java.io]
             [ring.util.response :as resp]
             [clojure.string :as string]))
 
