@@ -37,8 +37,11 @@
             (map #(.getName %) files))))
 
 (defn dir|file [uri]
-  (let [parts (split uri #"/")
-        file (peek parts)
-        dir- (join "/" (pop parts))
-        dir (if (empty? dir-) "." dir-)]
-    [dir file]))
+  (println uri)
+  (if (or (= uri "/") (empty? uri))
+    []
+    (let [parts (split uri #"/")
+          file (peek parts)
+          dir- (join "/" (pop parts))
+          dir (if (empty? dir-) "." dir-)]
+      [dir file])))

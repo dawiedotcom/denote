@@ -52,7 +52,7 @@
   (GET "*" {content-type :content-type uri :uri} 
        (if (edn-request? content-type)
          (markup-response uri)
-         default-html))
+         (slurp (clojure.java.io/resource "public/index.html"))));default-html))
   (POST "/" [format content content-id] (pandoc-response format content content-id))
   (POST "/save" [uri ext markup] (spit (str "." uri "." ext) (markup-str markup)))
   (route/not-found "404"))
