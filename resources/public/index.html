@@ -1,27 +1,39 @@
 <!doctype html>
 <html>
 <head>
+	<title>Denote</title>
     <meta charset="utf-8">
     <script type="text/javascript" src="javascript/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src="javascript/denote.js"></script>
     <script type="text/javascript">
         goog.require('denote.client.markup');
     </script>
+	<!--<link rel="stylesheet" type="text/css" href="css/style.css" media="screen, projection" />-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-glyphicons.css" rel="stylesheet" media="screen">
 </head>    
 <body>
-    <input type="hidden" id="extention" value=""/> </input>
-    <div>
-        <button onclick="denote.client.markup.save()">Save</button>
-    </div>
-    <div id="content">
-    </div>
-    <!--<div>
-        <p>Markdown:</p>
-        <textarea id="mdarea"></textarea>
-        <button onclick="denote.client.markup.renderClicked()">Render</button>
-    </div>-->
+
+
+	<div class="container">
+		<input type="hidden" id="extention" value=""/> </input>
+		<div>
+			<button type="button" class="btn btn-default btn-mini" onclick="denote.client.markup.save()">Save
+				<span class="glyphicon glyphicon-upload"></span>
+			</button>
+		</div>
+		<div id="content">
+		</div>
+		<!--<div>
+			<p>Markdown:</p>
+			<textarea id="mdarea"></textarea>
+			<button onclick="denote.client.markup.renderClicked()">Render</button>
+		</div>-->
+	</div>
     <script>
         denote.client.markup.start();
     </script>
+	<script src="javascript/bootstrap.min.js"></script>
 </body>
 </html>

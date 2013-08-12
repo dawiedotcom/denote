@@ -12,6 +12,6 @@ pom.xml.asc
 .lein-repl-history
 
 # ignored compiled clojurescript
-resources/public/javascript/denote/
-resources/public/javascript/cljs/
+resources/public/javascript/gen/
 resources/public/javascript/denote.js
+
