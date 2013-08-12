@@ -1,7 +1,7 @@
 (ns denote.client.markup
   (:require [domina :as dom]
             [cljs.reader :as reader]
-            [denote.client.html :as html])
+            [denote.client.templates :as template])
   (:use [domina.css :only [sel]]))
 
 (defn map->js [m]
@@ -15,21 +15,6 @@
 
 (def *markup* (atom {}))
 
-;; Templating
-
-(defn button [label onclick]
-  (html/tag "button" {:onclick onclick} label))
-
-(defn done-edit-button [id]
-  (let [res (button "ok" (str "denote.client.markup.renderClicked('" id "')"))]
-    (console.log res)
-    res))
-
-
-(defn edit-button [id]
-  (button "edit" (str "denote.client.markup.edit('" id "')")))
-
-
 ;; Client/Server coms
 
 (defn pandoc-callback [body]
@@ -39,7 +24,7 @@
         div (dom/by-id id)]
     (reset! *markup* (assoc @*markup* id (:markup response)))
     (dom/destroy-children! div)
-    (dom/set-inner-html! div (str content (edit-button id)))))
+    (dom/set-inner-html! div (template/par content id))))
 
 (defn ajax [params]
   (.ajax js/jQuery (map->js (merge {:type "GET"
@@ -62,7 +47,7 @@
     (dom/set-attr! ext :value (:ext response))
     (doseq [m (:content response)]
       (let [id (str "c" (:par m))
-            div (html/tag "div" {:id id} (:html m) (edit-button id))]
+            div (template/div-par (:html m) id)];(html/div {:class "row" :id id} (template/par (:html m) id))]
         (reset! *markup* (assoc @*markup* id (:markup m)))
         (dom/append! root div)))))
 
@@ -75,8 +60,8 @@
 (defn ^:export edit [id]
   (let [div (dom/by-id id)]
     (dom/destroy-children! div)
-    (dom/append! div (str "<textarea id=\"mdarea\">" (get @*markup* id) "</textarea>"))
-    (dom/append! div (done-edit-button id))))
+    (dom/append! div (template/edit-area (get @*markup* id)))
+    (dom/append! div (template/done-edit-button id))))
     
 (defn ^:export renderClicked [content-id]
   (let [mdarea (.getElementById js/document "mdarea")]
@@ -92,7 +77,7 @@
         data (clj-str {:markup @*markup*
                        :ext ext
                        :uri uri})]
-    (console.log data)
+    ;(console.log data)
     (ajax {:url "/save"
            :type "POST"
            :data data})))

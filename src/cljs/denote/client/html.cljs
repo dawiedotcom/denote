@@ -1,6 +1,9 @@
 (ns denote.client.html
   (:require [clojure.string :as string]))
 
+
+;; HTML 
+
 (defn attrs [atter-map]
   (string/join " " (for [[k v] atter-map] 
                      (str (name k) "=\"" v "\""))))
@@ -10,10 +13,10 @@
        (apply str inner-text) 
        "</" tag-name ">"))
 
-(defn div [attr-map]
-  (let [div (.createElement js/document "div")]
-    (doseq [[k v] attr-map]
-      (aset div (name k) v))
-    div))
+(defn div [attr-map & inner-text]
+  (apply tag "div" attr-map inner-text))
+
+(defn textarea [attr-map & inner-text]
+  (apply tag "textarea" attr-map inner-text))
 
 
